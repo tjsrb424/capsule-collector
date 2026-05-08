@@ -2,6 +2,8 @@
 
 import type { CardRarity, CapsuleOpenResult, DuplicateReward, UserCardState } from "@/lib/collection/types";
 import { formatStar, getNextStarProgress } from "@/lib/collection/stars";
+import { CardImage } from "@/components/cards/CardImage";
+import { RarityFrame } from "@/components/cards/RarityFrame";
 
 function rewardText(r: DuplicateReward): string {
   switch (r.type) {
@@ -98,7 +100,23 @@ export function CapsuleResultModal({
         </div>
 
         <div className="mt-4 rounded-2xl bg-white/60 p-4 ring-1 ring-[#2A1710]/10">
-          <div className="h-40 rounded-2xl bg-gradient-to-br from-white/80 to-white/30 ring-1 ring-[#2A1710]/10" />
+          <RarityFrame
+            rarity={rarity}
+            layout="image"
+            imageVariant="featured"
+            className="w-full"
+          >
+            <CardImage
+              key={`${result.card.id}|${result.card.imagePath ?? ""}`}
+              card={result.card}
+              owned
+              priority
+              variant="featured"
+              embeddedInFrame
+              className="w-full"
+              sizes="(max-width: 768px) 360px, 420px"
+            />
+          </RarityFrame>
           {result.duplicateReward ? (
             <div className="mt-3">
               <div className="text-sm font-extrabold text-[#2A1710]">
@@ -140,7 +158,7 @@ export function CapsuleResultModal({
                 : `광고 보상 2배 소진`}
             </button>
             <button
-              className="h-12 rounded-2xl bg-gradient-to-r from-[#D8A66A] to-[#B9783F] text-white font-extrabold shadow-sm hover:brightness-105"
+              className="h-12 rounded-2xl bg-linear-to-r from-[#D8A66A] to-[#B9783F] text-white font-extrabold shadow-sm hover:brightness-105"
               onClick={onOpenAgain}
             >
               한 번 더 열기
@@ -161,7 +179,7 @@ export function CapsuleResultModal({
               닫기
             </button>
             <button
-              className="h-12 rounded-2xl bg-gradient-to-r from-[#D8A66A] to-[#B9783F] text-white font-extrabold shadow-sm hover:brightness-105"
+              className="h-12 rounded-2xl bg-linear-to-r from-[#D8A66A] to-[#B9783F] text-white font-extrabold shadow-sm hover:brightness-105"
               onClick={onOpenAgain}
             >
               한 번 더 열기

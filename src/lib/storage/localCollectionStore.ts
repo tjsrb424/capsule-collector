@@ -1,6 +1,7 @@
 import type { LocalCollectionSave, ThemeId, UserThemeState } from "@/lib/collection/types";
 import { ensureUserThemeState } from "@/lib/collection/ownership";
 import { resetDailyAdCountsIfNeeded } from "@/lib/ads/dailyAdState";
+import { migrateLegacyCoffeePlaceholderIds } from "@/lib/storage/migrateCoffeeCardIds";
 
 const STORAGE_KEY = "capsuleCollector:userState:v1" as const;
 
@@ -35,18 +36,41 @@ export function loadCollectionSave(): LocalCollectionSave {
     const themes = (parsed.themes ?? {}) as Record<string, UserThemeState>;
     if (!themes[selectedThemeId]) themes[selectedThemeId] = ensureUserThemeState(selectedThemeId);
 
-    // daily ad counters reset (simple local date key)
+    let migrationHappened = false;
+
+    // daily ad counters reset (simple local date key) + legacy coffee placeholder id 제거
     for (const key of Object.keys(themes)) {
-      themes[key] = resetDailyAdCountsIfNeeded(themes[key]!);
+      let t = themes[key]!;
+      t = resetDailyAdCountsIfNeeded(t);
+      const before = JSON.stringify({
+        cardStates: t.cardStates,
+        representativeCardId: t.representativeCardId,
+      });
+      t = migrateLegacyCoffeePlaceholderIds(t);
+      if (
+        JSON.stringify({
+          cardStates: t.cardStates,
+          representativeCardId: t.representativeCardId,
+        }) !== before
+      ) {
+        migrationHappened = true;
+      }
+      themes[key] = t;
     }
 
-    return {
+    const restored: LocalCollectionSave = {
       version: 1,
       themes,
       selectedThemeId,
       createdAt: typeof parsed.createdAt === "number" ? parsed.createdAt : Date.now(),
       updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : Date.now(),
     };
+
+    if (migrationHappened) {
+      saveCollectionSave({ ...restored, updatedAt: Date.now() });
+    }
+
+    return restored;
   } catch {
     return createInitialSave();
   }

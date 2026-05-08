@@ -62,3 +62,42 @@
 ### 다음 작업
 - Sprint 7: 카드 이미지 적용(경로 규칙/placeholder/fallback 통합)
 
+---
+
+## 2026-05-08 Sprint 7
+
+### 목표
+- 커피 카드 이미지 경로 규칙 적용: `public/assets/cards/coffee/final/{beverageId}.png`
+- 우선 적용 카드 8종(americano/espresso/latte/cappuccino/vanilla_latte/caramel_latte/mocha/affogato) 실제 이미지 표시
+- 이미지 없음/로딩 실패 시 등급 기반 placeholder로 안정적 fallback(도감/결과/홈 공통)
+
+### 변경 파일
+- src/components/cards/CardImage.tsx
+- src/components/cards/CollectionCard.tsx
+- src/components/cards/CollectionCardGridItem.tsx
+- src/components/capsule/CapsuleResultModal.tsx
+- src/components/collection/CardDetailModal.tsx
+- docs/SPRINT_LOG.md
+
+### 구현 내용
+- 공통 이미지 컴포넌트 `CardImage` 추가
+  - `card.imagePath`가 없거나 로딩 실패(onError) 시 **등급 기반 SVG placeholder(data URI)**로 fallback
+  - 미획득 카드(locked)는 “???? / 미획득” placeholder로 표시
+  - `next/image`로 표시하여 모바일에서 비율/레이아웃이 깨지지 않도록 `fill + object-cover` 적용
+- 기존 카드 UI(`CollectionCard`, `CollectionCardGridItem`, 결과/상세 모달)에서 이미지 영역을 `CardImage`로 통일
+- 실제 파일명 이슈(한글 파일명) 대응
+  - `final/` 내 한글 파일을 Sprint 7 규칙의 영문 파일명(예: `americano.png`)으로 **복사**하여 경로 규칙을 만족
+  - 원본 한글 파일은 유지
+
+### 테스트 결과
+- (로컬) `npm run lint` 통과
+- (로컬) `npm run build` 통과
+- (로컬) 도감/결과/홈에서 이미지가 존재하는 카드(우선 8종)는 실제 이미지 표시, 그 외는 placeholder fallback 표시 확인 가능
+
+### 이슈
+- placeholder PNG 파일을 생성하지 않고, data URI SVG로 대체하여 “이미지 생성 작업” 없이도 안정적인 fallback을 우선 구현
+
+### 다음 작업
+- (선택) `public/assets/cards/coffee/placeholder/{rarity}.png`를 실제 에셋으로 준비하면 네트워크/콘솔 에러 없이도 동일 UX를 유지 가능
+- (선택) 나머지 카드들도 `coffeeCards.ts`의 `imagePath` 규칙과 맞게 파일명(또는 매핑)을 정리하면 실제 이미지 적용 범위를 확장 가능
+

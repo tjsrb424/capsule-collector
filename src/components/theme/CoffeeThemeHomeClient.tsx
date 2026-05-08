@@ -164,7 +164,7 @@ export function CoffeeThemeHomeClient() {
           </div>
           <div className="mt-3">
             {representative ? (
-              <CollectionCard card={representative} owned />
+              <CollectionCard card={representative} owned emphasis />
             ) : (
               <div className="rounded-2xl bg-[#FFF2D7]/70 ring-1 ring-[#2A1710]/10 p-4">
                 <div className="text-sm font-semibold text-[#2A1710]">대표 카드 없음</div>
@@ -215,7 +215,18 @@ export function CoffeeThemeHomeClient() {
               ? ownedCards.slice(0, 5).map((x) => x.card)
               : coffeeCards.slice(0, 4)
             ).map((c) => (
-              <CollectionCard key={`recent-${c.id}`} card={c} owned={!!themeState.cardStates[c.id]?.owned} />
+              <CollectionCard
+                key={`recent-${c.id}`}
+                card={c}
+                owned={!!themeState.cardStates[c.id]?.owned}
+                emphasis={
+                  !!(
+                    themeState.representativeCardId &&
+                    themeState.representativeCardId === c.id &&
+                    themeState.cardStates[c.id]?.owned
+                  )
+                }
+              />
             ))}
           </div>
         </section>

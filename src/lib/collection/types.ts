@@ -37,6 +37,12 @@ export type CollectionCard = {
   sourceGame?: string;
   imagePath?: string;
   silhouetteImagePath?: string;
+  /** Coffee 2048 레시피 식별자 */
+  sourceRecipeId?: string;
+  /** Coffee 2048 레시피 종류 (예: standard, time_limited) */
+  sourceRecipeKind?: string;
+  /** 상점/출처 가용성 표기 */
+  sourceShopAvailability?: string;
 };
 
 export type DuplicateReward =

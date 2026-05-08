@@ -72,3 +72,82 @@ body {
     opacity: 0.98;
   }
 }
+
+/* Legendary 카드 프레임 — 가벼운 빛 스윕 (레이어는 .rarity-legendary-shimmer) */
+@keyframes rarity-legendary-shimmer-sweep {
+  0% {
+    transform: translateX(-130%) skewX(-14deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.42;
+  }
+  48% {
+    opacity: 0.22;
+  }
+  100% {
+    transform: translateX(230%) skewX(-14deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rarity-legendary-sparkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.rarity-legendary-shimmer::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 48%;
+  height: 140%;
+  background: linear-gradient(
+    105deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 252, 240, 0.14) 40%,
+    rgba(253, 230, 138, 0.28) 50%,
+    rgba(255, 252, 240, 0.1) 58%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  mix-blend-mode: screen;
+  animation: rarity-legendary-shimmer-sweep 4.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.rarity-legendary-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.22) 0, transparent 42%),
+    radial-gradient(circle at 88% 24%, rgba(251, 191, 36, 0.15) 0, transparent 38%),
+    radial-gradient(circle at 72% 82%, rgba(255, 255, 255, 0.12) 0, transparent 35%);
+  opacity: 0.5;
+  pointer-events: none;
+  animation: rarity-legendary-sparkle 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rarity-legendary-shimmer::before,
+  .rarity-legendary-shimmer::after {
+    animation: none;
+  }
+
+  .rarity-legendary-shimmer::before {
+    opacity: 0.08;
+    transform: translateX(0) skewX(0);
+    width: 100%;
+    background: rgba(255, 252, 240, 0.06);
+  }
+
+  .rarity-legendary-shimmer::after {
+    opacity: 0.35;
+  }
+}

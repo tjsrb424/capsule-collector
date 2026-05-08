@@ -62,6 +62,13 @@ export function CollectionBook({
         themeId={themeId}
         card={selectedCard}
         cardState={selectedCard ? themeState.cardStates[selectedCard.id] ?? null : null}
+        isRepresentative={
+          !!(
+            selectedCard &&
+            themeState.representativeCardId &&
+            themeState.representativeCardId === selectedCard.id
+          )
+        }
         onClose={() => setDetailOpen(false)}
         onSetRepresentative={
           onSetRepresentative

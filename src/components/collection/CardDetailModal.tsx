@@ -3,12 +3,15 @@
 import type { CollectionCard, ThemeId, UserCardState } from "@/lib/collection/types";
 import { formatStar, getNextStarProgress } from "@/lib/collection/stars";
 import { scoreCard } from "@/lib/collection/scoring";
+import { CardImage } from "@/components/cards/CardImage";
+import { RarityFrame } from "@/components/cards/RarityFrame";
 
 export function CardDetailModal({
   open,
   themeId,
   card,
   cardState,
+  isRepresentative,
   onClose,
   onSetRepresentative,
 }: {
@@ -16,6 +19,8 @@ export function CardDetailModal({
   themeId: ThemeId;
   card: CollectionCard | null;
   cardState: UserCardState | null;
+  /** 도감에서 설정된 대표 카드일 때 프레임 강조 */
+  isRepresentative?: boolean;
   onClose: () => void;
   onSetRepresentative?: (cardId: string) => void;
 }) {
@@ -51,7 +56,25 @@ export function CardDetailModal({
         </div>
 
         <div className="mt-4 rounded-2xl bg-white/60 p-4 ring-1 ring-[#2A1710]/10">
-          <div className="h-40 rounded-2xl bg-gradient-to-br from-white/80 to-white/30 ring-1 ring-[#2A1710]/10" />
+          <RarityFrame
+            rarity={card.rarity}
+            locked={!owned}
+            selected={!!(owned && isRepresentative)}
+            layout="image"
+            imageVariant="featured"
+            className="w-full"
+          >
+            <CardImage
+              key={`${card.id}|${card.imagePath ?? ""}`}
+              card={card}
+              owned={owned}
+              priority={owned}
+              variant="featured"
+              embeddedInFrame
+              className="w-full"
+              sizes="(max-width: 768px) 360px, 420px"
+            />
+          </RarityFrame>
           {owned ? (
             <div className="mt-3 space-y-2">
               {card.description ? (

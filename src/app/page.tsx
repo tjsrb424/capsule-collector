@@ -86,7 +86,7 @@ export default function Home() {
               </div>
               {representative ? (
                 <div className="mt-3">
-                  <CardView card={representative} owned />
+                  <CardView card={representative} owned emphasis />
                 </div>
               ) : null}
             </div>
